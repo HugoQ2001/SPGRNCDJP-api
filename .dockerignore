@@ -1,0 +1,7 @@
+dev-env/
+api-env/
+__pycache__/
+
+*.env
+*.env.*
+env.*
