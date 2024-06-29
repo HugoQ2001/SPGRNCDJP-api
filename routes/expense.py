@@ -6,14 +6,16 @@ from schemas.expense import Expense
 expense = APIRouter()
 
 
+# Get expense by id_expense
 @expense.get("/expenses/{id}", tags=["Expense"])
 async def get_expense_by_id(id: int):
     result = conn.execute(expenses.select().where(expenses.c.id == id)).first()
     return result
 
 
-@expense.get("/expenses/user/{user_id}", tags=["Expense"])
-async def get_expenses_by_user(user_id: str):
+# Get expenses limit 5 users by user_id
+@expense.get("/expenses/limit/user/{user_id}", tags=["Expense"])
+async def get_expenses_limit_by_user(user_id: str):
     results = conn.execute(
         expenses.select()
         .where(expenses.c.user_id == user_id)
@@ -23,7 +25,8 @@ async def get_expenses_by_user(user_id: str):
     return results
 
 
-@expense.get("/expense/user/{user_id}", tags=["Expense"])
+# Get last expenses by user_id
+@expense.get("/expense/last/user/{user_id}", tags=["Expense"])
 async def get_expense_last_by_user(user_id: str):
     result = conn.execute(
         expenses.select()
@@ -34,12 +37,13 @@ async def get_expense_last_by_user(user_id: str):
     return result
 
 
+# register expenses
 @expense.post("/expenses", tags=["Expense"])
 async def save_expense(register: Expense):
     new_register = {
         "user_id": register.user_id,
         "expense_date": register.expense_date,
-        "value": register.value,
+        "expense_value": register.expense_value,
     }
 
     add_register = conn.execute(expenses.insert().values(new_register))
@@ -52,6 +56,7 @@ async def save_expense(register: Expense):
     return result
 
 
+# delete expeses
 @expense.delete("/expenses/user/{user_id}/{id}", tags=["Expense"])
 async def delete_expense(user_id: str, id: int):
     remove = conn.execute(

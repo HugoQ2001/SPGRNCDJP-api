@@ -8,7 +8,7 @@ pronostications = Table(
     Column("id", Integer, primary_key=True),
     Column("user_id", String(200), nullable=False),
     Column("pronostication_date", Date, nullable=False),
-    Column("value", Float, nullable=False),
+    Column("pronostication_value", Float, nullable=False),
 )
 
 

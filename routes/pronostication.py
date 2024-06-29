@@ -9,6 +9,12 @@ from datetime import datetime
 pronostication = APIRouter()
 
 
+@pronostication.get("/pronostications", tags=["Pronostication"])
+async def get_all_pronostications():
+    result = conn.execute(pronostications.select()).fetchall()
+    return result
+
+
 @pronostication.post("/pronostications", tags=["Pronostication"])
 async def save_pronostication(register: Pronostication):
 
@@ -18,7 +24,8 @@ async def save_pronostication(register: Pronostication):
         .order_by(expenses.c.id.asc())
         .limit(5)
     ).fetchall()
-    valores = [dato.value for dato in datos]
+
+    valores = [dato.expense_value for dato in datos]
     print(valores)
 
     # x = [100, 120, 210, 300, 200]
@@ -26,7 +33,7 @@ async def save_pronostication(register: Pronostication):
     new_register = {
         "user_id": register.user_id,
         "pronostication_date": datetime.now(),
-        "value": predecir_var[0],
+        "pronostication_value": predecir_var[0],
     }
 
     add_register = conn.execute(pronostications.insert().values(new_register))

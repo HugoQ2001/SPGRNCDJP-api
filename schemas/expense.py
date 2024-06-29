@@ -7,4 +7,4 @@ class Expense(BaseModel):
     id: Optional[int] = None
     user_id: str
     expense_date: date
-    value: float
+    expense_value: float
