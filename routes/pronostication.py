@@ -21,7 +21,7 @@ async def save_pronostication(register: Pronostication):
     datos = conn.execute(
         expenses.select()
         .where(expenses.c.user_id == register.user_id)
-        .order_by(expenses.c.id.asc())
+        .order_by(expenses.c.id.desc())
         .limit(5)
     ).fetchall()
 

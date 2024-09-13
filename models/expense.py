@@ -7,6 +7,7 @@ expenses = Table(
     meta,
     Column("id", Integer, primary_key=True),
     Column("user_id", String(200), nullable=False),
+    Column("category", String(100), nullable=False),
     Column("expense_date", Date, nullable=False),
     Column("expense_value", Float, nullable=False),
 )

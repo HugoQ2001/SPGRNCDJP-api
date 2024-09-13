@@ -5,6 +5,11 @@ from schemas.expense import Expense
 
 expense = APIRouter()
 
+# Get all expenses
+@expense.get("/expenses", tags=["Expense"])
+async def get_all_expenses():
+    result = conn.execute(expenses.select().order_by(expenses.c.expense_date.desc())).fetchall()
+    return result
 
 # Get expense by id_expense
 @expense.get("/expenses/{id}", tags=["Expense"])
@@ -42,6 +47,7 @@ async def get_expense_last_by_user(user_id: str):
 async def save_expense(register: Expense):
     new_register = {
         "user_id": register.user_id,
+        "category": register.category,
         "expense_date": register.expense_date,
         "expense_value": register.expense_value,
     }
