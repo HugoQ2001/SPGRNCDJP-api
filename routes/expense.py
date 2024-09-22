@@ -11,6 +11,21 @@ async def get_all_expenses():
     result = conn.execute(expenses.select().order_by(expenses.c.expense_date.desc())).fetchall()
     return result
 
+@expense.get("/expenses/user/{user_id}", tags=["Expense"])
+async def get_expenses_by_user_id(user_id: str):
+    # Consulta para seleccionar los gastos que coinciden con el user_id y ordenarlos por fecha descendente
+    result = conn.execute(
+        expenses.select()
+        .where(expenses.c.user_id == user_id)
+        .order_by(expenses.c.expense_date.desc())  # Ordenar por fecha de gasto de forma descendente
+    ).fetchall()
+    
+    # Si no se encuentran resultados, devuelve un mensaje apropiado
+    if not result:
+        return {"message": "No expenses found for this user"}
+    
+    return result
+
 # Get expense by id_expense
 @expense.get("/expenses/{id}", tags=["Expense"])
 async def get_expense_by_id(id: int):
@@ -24,7 +39,7 @@ async def get_expenses_limit_by_user(user_id: str):
     results = conn.execute(
         expenses.select()
         .where(expenses.c.user_id == user_id)
-        .order_by(expenses.c.id.desc())
+        .order_by(expenses.c.expense_date.desc())
         .limit(5)
     ).fetchall()
     return results
@@ -36,7 +51,7 @@ async def get_expense_last_by_user(user_id: str):
     result = conn.execute(
         expenses.select()
         .where(expenses.c.user_id == user_id)
-        .order_by(expenses.c.id.desc())
+        .order_by(expenses.c.expense_date.desc())  # Ordenar por expenses_date en orden descendente
         .limit(1)
     ).fetchone()
     return result
@@ -63,7 +78,7 @@ async def save_expense(register: Expense):
 
 
 # delete expeses
-@expense.delete("/expenses/user/{user_id}/{id}", tags=["Expense"])
+@expense.delete("/expenses/delete/user/{user_id}/{id}", tags=["Expense"])
 async def delete_expense(user_id: str, id: int):
     remove = conn.execute(
         expenses.delete().where(expenses.c.user_id == user_id, expenses.c.id == id)

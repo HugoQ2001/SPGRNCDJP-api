@@ -3,8 +3,10 @@ from config.db import conn
 from models.pronostication import pronostications
 from models.expense import expenses
 from schemas.pronostication import Pronostication
-from routes.prediction import predecir, model, scaler
 from datetime import datetime
+from modelornn.modelredneuronal import predecirgasto
+import numpy as np
+import httpx
 
 pronostication = APIRouter()
 
@@ -28,12 +30,15 @@ async def save_pronostication(register: Pronostication):
     valores = [dato.expense_value for dato in datos]
     print(valores)
 
-    # x = [100, 120, 210, 300, 200]
-    predecir_var = predecir(valores, model, scaler)
+    valores_2d = np.array(valores).reshape(1, -1)
+
+    prediccion = predecirgasto(valores_2d)
+    print(prediccion)
+
     new_register = {
         "user_id": register.user_id,
         "pronostication_date": datetime.now(),
-        "pronostication_value": predecir_var[0],
+        "pronostication_value": prediccion,
     }
 
     add_register = conn.execute(pronostications.insert().values(new_register))
